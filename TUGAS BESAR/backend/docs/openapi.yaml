@@ -1,0 +1,897 @@
+openapi: 3.0.3
+info:
+  title: Asset Management School API
+  description: RESTful API for managing school assets, including employees, vendors, assets, transactions, and analytics.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+servers:
+  - url: http://localhost:5000/api
+    description: Local development server
+paths:
+  /departments:
+    get:
+      summary: Get all departments
+      description: Retrieve a list of all departments.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Department'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new department
+      description: Add a new department to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "IT"
+      responses:
+        '201':
+          description: Department created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /departments/{id}:
+    get:
+      summary: Get department by ID
+      description: Retrieve a specific department by its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Department'
+        '404':
+          description: Department not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update department
+      description: Update an existing department.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Updated IT"
+      responses:
+        '200':
+          description: Department updated
+        '404':
+          description: Department not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete department
+      description: Delete a department by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Department deleted
+        '404':
+          description: Department not found
+        '500':
+          description: Internal server error
+  /employees:
+    get:
+      summary: Get all employees
+      description: Retrieve a list of all employees.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Employee'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new employee
+      description: Add a new employee to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  example: "john@example.com"
+                department_id:
+                  type: integer
+                  example: 1
+      responses:
+        '201':
+          description: Employee created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /employees/{id}:
+    get:
+      summary: Get employee by ID
+      description: Retrieve a specific employee by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employee'
+        '404':
+          description: Employee not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update employee
+      description: Update an existing employee.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Updated John Doe"
+                email:
+                  type: string
+                  example: "updated@example.com"
+                department_id:
+                  type: integer
+                  example: 2
+      responses:
+        '200':
+          description: Employee updated
+        '404':
+          description: Employee not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete employee
+      description: Delete an employee by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Employee deleted
+        '404':
+          description: Employee not found
+        '500':
+          description: Internal server error
+  /vendors:
+    get:
+      summary: Get all vendors
+      description: Retrieve a list of all vendors.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vendor'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new vendor
+      description: Add a new vendor to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Tech Supplies Inc"
+                contact_info:
+                  type: string
+                  example: "123-456-7890"
+                address:
+                  type: string
+                  example: "123 Tech St"
+      responses:
+        '201':
+          description: Vendor created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vendor'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /vendors/{id}:
+    get:
+      summary: Get vendor by ID
+      description: Retrieve a specific vendor by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vendor'
+        '404':
+          description: Vendor not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update vendor
+      description: Update an existing vendor.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Updated Tech Supplies"
+                contact_info:
+                  type: string
+                  example: "098-765-4321"
+                address:
+                  type: string
+                  example: "Updated Address"
+      responses:
+        '200':
+          description: Vendor updated
+        '404':
+          description: Vendor not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete vendor
+      description: Delete a vendor by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Vendor deleted
+        '404':
+          description: Vendor not found
+        '500':
+          description: Internal server error
+  /categories:
+    get:
+      summary: Get all categories
+      description: Retrieve a list of all categories.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new category
+      description: Add a new category to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  example: "Electronics"
+      responses:
+        '201':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /categories/{id}:
+    get:
+      summary: Get category by ID
+      description: Retrieve a specific category by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+        '404':
+          description: Category not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update category
+      description: Update an existing category.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Updated Electronics"
+      responses:
+        '200':
+          description: Category updated
+        '404':
+          description: Category not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete category
+      description: Delete a category by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Category deleted
+        '404':
+          description: Category not found
+        '500':
+          description: Internal server error
+  /assets:
+    get:
+      summary: Get all assets
+      description: Retrieve a list of all assets.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Asset'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new asset
+      description: Add a new asset to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - serial_number
+                - name
+                - category_id
+                - vendor_id
+                - received_date
+              properties:
+                serial_number:
+                  type: string
+                  example: "SN001"
+                name:
+                  type: string
+                  example: "Laptop Dell"
+                category_id:
+                  type: integer
+                  example: 1
+                vendor_id:
+                  type: integer
+                  example: 1
+                received_date:
+                  type: string
+                  format: date
+                  example: "2025-10-20"
+      responses:
+        '201':
+          description: Asset created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+  /assets/{id}:
+    get:
+      summary: Get asset by ID
+      description: Retrieve a specific asset by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Asset'
+        '404':
+          description: Asset not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update asset
+      description: Update an existing asset.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                serial_number:
+                  type: string
+                  example: "SN002"
+                name:
+                  type: string
+                  example: "Updated Laptop"
+                category_id:
+                  type: integer
+                  example: 2
+                vendor_id:
+                  type: integer
+                  example: 2
+                received_date:
+                  type: string
+                  format: date
+                  example: "2025-10-21"
+      responses:
+        '200':
+          description: Asset updated
+        '404':
+          description: Asset not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete asset
+      description: Delete an asset by ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1
+      responses:
+        '200':
+          description: Asset deleted
+        '404':
+          description: Asset not found
+        '500':
+          description: Internal server error
+  /transactions/loans:
+    get:
+      summary: Get all loans
+      description: Retrieve a list of all loan transactions.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Loan'
+        '500':
+          description: Internal server error
+  /transactions/borrow:
+    post:
+      summary: Borrow an asset
+      description: Create a loan transaction for borrowing an asset.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - asset_id
+                - employee_id
+                - expected_return_date
+              properties:
+                asset_id:
+                  type: integer
+                  example: 1
+                employee_id:
+                  type: integer
+                  example: 1
+                expected_return_date:
+                  type: string
+                  format: date
+                  example: "2025-10-30"
+      responses:
+        '201':
+          description: Loan created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  loan_id:
+                    type: string
+                    example: "uuid-string"
+                  asset_id:
+                    type: integer
+                  employee_id:
+                    type: integer
+                  borrow_date:
+                    type: string
+                    format: date
+                  expected_return_date:
+                    type: string
+                    format: date
+        '400':
+          description: Bad request (asset not available)
+        '404':
+          description: Asset not found
+        '500':
+          description: Internal server error
+  /transactions/return:
+    post:
+      summary: Return an asset
+      description: Return a borrowed asset and update its status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - loan_id
+                - return_condition
+              properties:
+                loan_id:
+                  type: string
+                  example: "uuid-string"
+                return_condition:
+                  type: string
+                  enum: [good, damaged]
+                  example: "good"
+      responses:
+        '200':
+          description: Asset returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  loan_id:
+                    type: string
+                  return_condition:
+                    type: string
+                  asset_status:
+                    type: string
+        '400':
+          description: Bad request
+        '404':
+          description: Loan not found
+        '500':
+          description: Internal server error
+  /analytics/most-borrowers:
+    get:
+      summary: Get most borrowers
+      description: Retrieve employees who borrow the most assets.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    borrow_count:
+                      type: integer
+        '500':
+          description: Internal server error
+  /analytics/most-borrowed-categories:
+    get:
+      summary: Get most borrowed categories
+      description: Retrieve asset categories that are borrowed the most.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    category:
+                      type: string
+                    borrow_count:
+                      type: integer
+        '500':
+          description: Internal server error
+  /analytics/asset-status-summary:
+    get:
+      summary: Get asset status summary
+      description: Retrieve count of assets by status.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                    count:
+                      type: integer
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    Department:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "IT"
+        created_at:
+          type: string
+          format: date-time
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "john@example.com"
+        department_id:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+    Vendor:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Tech Supplies Inc"
+        contact_info:
+          type: string
+          example: "123-456-7890"
+        address:
+          type: string
+          example: "123 Tech St"
+        created_at:
+          type: string
+          format: date-time
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Electronics"
+        created_at:
+          type: string
+          format: date-time
+    Asset:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        serial_number:
+          type: string
+          example: "SN001"
+        name:
+          type: string
+          example: "Laptop Dell"
+        category_id:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum: [available, borrowed, damaged]
+          example: "available"
+        vendor_id:
+          type: integer
+          example: 1
+        received_date:
+          type: string
+          format: date
+          example: "2025-10-20"
+        created_at:
+          type: string
+          format: date-time
+    Loan:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "uuid-string"
+        asset_id:
+          type: integer
+          example: 1
+        employee_id:
+          type: integer
+          example: 1
+        borrow_date:
+          type: string
+          format: date
+          example: "2025-10-20"
+        expected_return_date:
+          type: string
+          format: date
+          example: "2025-10-30"
+        actual_return_date:
+          type: string
+          format: date
+          nullable: true
+        return_condition:
+          type: string
+          enum: [good, damaged]
+          nullable: true
+        status:
+          type: string
+          enum: [active, returned]
+          example: "active"
+        created_at:
+          type: string
+          format: date-time

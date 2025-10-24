@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width">
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gray-100">
+    @include('partials.navbar')
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold mb-8">Dashboard</h1>
 
@@ -67,8 +68,8 @@
         </div>
 
         <!-- Modal for Create/Edit -->
-        <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" id="my-modal">
-            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center overflow-y-auto h-full w-full hidden z-50">
+            <div class="relative p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
                     <h3 class="text-lg font-medium text-gray-900" id="modal-title">Tambah Transaksi</h3>
                     <form id="transaksi-form" method="POST" class="mt-4">
@@ -92,7 +93,7 @@
                             <input type="number" step="0.01" name="total_transaksi" id="total_transaksi" class="w-full px-3 py-2 border rounded" required>
                         </div>
                         <div class="flex justify-end">
-                            <button type="button" onclick="closeModal()" class="mr-2 px-4 py-2 bg-gray-300 rounded">Batal</button>
+                            <button type="button" onclick="closeModal('modal')" class="mr-2 px-4 py-2 bg-gray-300 rounded">Tutup</button>
                             <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Simpan</button>
                         </div>
                     </form>
@@ -101,8 +102,8 @@
         </div>
 
         <!-- Modal for Delete Confirmation -->
-        <div id="delete-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
-            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div id="delete-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center overflow-y-auto h-full w-full hidden z-50">
+            <div class="relative p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
                     <h3 class="text-lg font-medium text-gray-900">Konfirmasi Hapus</h3>
                     <p class="text-sm text-gray-500 mt-2">Apakah Anda yakin ingin menghapus transaksi ini?</p>
@@ -110,25 +111,38 @@
                         @csrf
                         @method('DELETE')
                         <div class="flex justify-end">
-                            <button type="button" onclick="closeDeleteModal()" class="mr-2 px-4 py-2 bg-gray-300 rounded">Batal</button>
+                            <button type="button" onclick="closeModal('delete-modal')" class="mr-2 px-4 py-2 bg-gray-300 rounded">Tutup</button>
                             <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded">Hapus</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
+        <!-- Success Modal -->
+        <div id="success-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center overflow-y-auto h-full w-full hidden z-50">
+            <div class="relative p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <h3 class="text-lg font-medium text-gray-900" id="success-modal-title">Berhasil</h3>
+                    <div id="success-modal-content"></div>
+                    <div class="flex justify-end mt-4">
+                        <button type="button" onclick="closeModal('success-modal')" class="px-4 py-2 bg-blue-500 text-white rounded">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Simple chart example
+        // Chart example with real data
         const ctx = document.getElementById('transaksiChart').getContext('2d');
         const transaksiChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                labels: @json($chartLabels),
                 datasets: [{
                     label: 'Transaksi',
-                    data: [12, 19, 3, 5, 2],
+                    data: @json($chartValues),
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
@@ -179,8 +193,8 @@
             modal.classList.remove('hidden');
         }
 
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
         }
 
         function openDeleteModal(id) {
@@ -194,9 +208,37 @@
             document.getElementById('delete-modal').classList.add('hidden');
         }
 
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Close modal on ESC key or click outside
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeAllModals();
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('bg-gray-600')) {
+                closeAllModals();
+            }
+        });
+
+        function closeAllModals() {
+            const modals = ['modal', 'delete-modal', 'success-modal'];
+            modals.forEach(id => {
+                const modal = document.getElementById(id);
+                if (modal && !modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden');
+                }
+            });
+        }
+
         // Show success message if any
         @if(session('success'))
-            alert('{{ session("success") }}');
+            document.getElementById('success-modal-content').innerHTML = '{{ session("success") }}';
+            document.getElementById('success-modal').classList.remove('hidden');
         @endif
     </script>
 </body>

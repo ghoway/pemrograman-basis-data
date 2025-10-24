@@ -21,7 +21,23 @@ class DashboardController extends Controller
 
         $pelanggans = Pelanggan::all();
 
-        return view('dashboard', compact('totalPelanggan', 'totalTransaksi', 'transaksis', 'pelanggans'));
+        // Data for chart: transactions per month
+        $chartData = DB::table('t_transaksi')
+            ->selectRaw('MONTH(tanggal_transaksi) as month, COUNT(*) as count')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')
+            ->toArray();
+
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        $chartLabels = [];
+        $chartValues = [];
+        foreach ($chartData as $month => $count) {
+            $chartLabels[] = $months[$month - 1];
+            $chartValues[] = $count;
+        }
+
+        return view('dashboard', compact('totalPelanggan', 'totalTransaksi', 'transaksis', 'pelanggans', 'chartLabels', 'chartValues'));
     }
 
     public function store(Request $request)

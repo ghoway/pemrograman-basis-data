@@ -37,7 +37,19 @@ class DashboardController extends Controller
             $chartValues[] = $count;
         }
 
-        return view('dashboard', compact('totalPelanggan', 'totalTransaksi', 'transaksis', 'pelanggans', 'chartLabels', 'chartValues'));
+        // Data for pelanggan chart: transactions per pelanggan
+        $pelangganChartData = DB::table('t_transaksi')
+            ->join('t_pelanggan', 't_transaksi.id_pelanggan', '=', 't_pelanggan.id_pelanggan')
+            ->selectRaw('t_pelanggan.nama_pelanggan, COUNT(t_transaksi.id_transaksi) as count')
+            ->groupBy('t_pelanggan.nama_pelanggan')
+            ->orderBy('count', 'desc')
+            ->pluck('count', 'nama_pelanggan')
+            ->toArray();
+
+        $pelangganChartLabels = array_keys($pelangganChartData);
+        $pelangganChartValues = array_values($pelangganChartData);
+
+        return view('dashboard', compact('totalPelanggan', 'totalTransaksi', 'transaksis', 'pelanggans', 'chartLabels', 'chartValues', 'pelangganChartLabels', 'pelangganChartValues'));
     }
 
     public function store(Request $request)
@@ -45,7 +57,7 @@ class DashboardController extends Controller
         $request->validate([
             'id_pelanggan' => 'required|exists:t_pelanggan,id_pelanggan',
             'tanggal_transaksi' => 'required|date',
-            'total_transaksi' => 'required|numeric',
+            'total_transaksi' => 'required|numeric|min:1',
         ]);
 
         Transaksi::create($request->all());
@@ -60,7 +72,7 @@ class DashboardController extends Controller
         $request->validate([
             'id_pelanggan' => 'required|exists:t_pelanggan,id_pelanggan',
             'tanggal_transaksi' => 'required|date',
-            'total_transaksi' => 'required|numeric',
+            'total_transaksi' => 'required|numeric|min:1',
         ]);
 
         $transaksi->update($request->all());
@@ -74,5 +86,46 @@ class DashboardController extends Controller
         $transaksi->delete();
 
         return redirect()->route('dashboard')->with('success', 'Transaksi berhasil dihapus.');
+    }
+
+    public function getChartData(Request $request)
+    {
+        $type = $request->query('type');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        $query = DB::table('t_transaksi');
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('tanggal_transaksi', [$startDate, $endDate]);
+        }
+
+        if ($type === 'transaksi') {
+            $chartData = $query->selectRaw('MONTH(tanggal_transaksi) as month, COUNT(*) as count')
+                ->groupBy('month')
+                ->orderBy('month')
+                ->pluck('count', 'month')
+                ->toArray();
+
+            $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            $labels = [];
+            $values = [];
+            foreach ($chartData as $month => $count) {
+                $labels[] = $months[$month - 1];
+                $values[] = $count;
+            }
+        } elseif ($type === 'pelanggan') {
+            $chartData = $query->join('t_pelanggan', 't_transaksi.id_pelanggan', '=', 't_pelanggan.id_pelanggan')
+                ->selectRaw('t_pelanggan.nama_pelanggan, COUNT(t_transaksi.id_transaksi) as count')
+                ->groupBy('t_pelanggan.nama_pelanggan')
+                ->orderBy('count', 'desc')
+                ->pluck('count', 'nama_pelanggan')
+                ->toArray();
+
+            $labels = array_keys($chartData);
+            $values = array_values($chartData);
+        }
+
+        return response()->json(['labels' => $labels, 'values' => $values]);
     }
 }

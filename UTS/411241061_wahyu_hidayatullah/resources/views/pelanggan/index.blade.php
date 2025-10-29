@@ -36,8 +36,8 @@
                             <td class="px-4 py-2">{{ $pelanggan->no_hp }}</td>
                             <td class="px-4 py-2">{{ $pelanggan->alamat }}</td>
                             <td class="px-4 py-2">
-                                <button onclick="openViewModal({{ $pelanggan->id_pelanggan }}, '{{ $pelanggan->nama_pelanggan }}', '{{ $pelanggan->email }}', '{{ $pelanggan->telepon }}', '{{ $pelanggan->alamat }}')" class="bg-green-500 text-white px-2 py-1 rounded mr-2">View</button>
-                                <button onclick="openEditModal({{ $pelanggan->id_pelanggan }}, '{{ $pelanggan->nama_pelanggan }}', '{{ $pelanggan->email }}', '{{ $pelanggan->telepon }}', '{{ $pelanggan->alamat }}')" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Edit</button>
+                                 <button onclick="openViewModal({{ $pelanggan->id_pelanggan }}, '{{ $pelanggan->nama_pelanggan }}', '{{ $pelanggan->email }}', '{{ $pelanggan->no_hp }}', '{{ $pelanggan->alamat }}')" class="bg-green-500 text-white px-2 py-1 rounded mr-2">View</button>
+                                 <button onclick="openEditModal({{ $pelanggan->id_pelanggan }}, '{{ $pelanggan->nama_pelanggan }}', '{{ $pelanggan->email }}', '{{ $pelanggan->no_hp }}', '{{ $pelanggan->alamat }}')" class="bg-yellow-500 text-white px-2 py-1 rounded mr-2">Edit</button>
                                 <button onclick="openDeleteModal({{ $pelanggan->id_pelanggan }})" class="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
                             </td>
                         </tr>
@@ -61,23 +61,26 @@
     <script>
         function openCreateModal() {
             const content = `
-                <form id="createForm" method="POST" action="{{ route('pelanggan.store') }}">
+                <form id="createForm" method="POST" action="{{ route('pelanggan.store') }}" onsubmit="return validatePelangganForm()">
                     @csrf
                     <div class="mb-4">
                         <label class="block text-left">Nama Pelanggan</label>
-                        <input type="text" name="nama_pelanggan" class="w-full px-3 py-2 border rounded" required>
+                        <input type="text" name="nama_pelanggan" id="nama_pelanggan" class="w-full px-3 py-2 border rounded" required>
                     </div>
                     <div class="mb-4">
                         <label class="block text-left">Email</label>
-                        <input type="email" name="email" class="w-full px-3 py-2 border rounded" required>
+                        <input type="email" name="email" id="email" class="w-full px-3 py-2 border rounded" required>
+                        <span id="email-error" class="text-red-500 text-sm"></span>
                     </div>
                     <div class="mb-4">
                         <label class="block text-left">No HP</label>
-                        <input type="text" name="no_hp" class="w-full px-3 py-2 border rounded">
+                        <input type="text" name="no_hp" id="no_hp" class="w-full px-3 py-2 border rounded" required>
+                        <span id="no_hp-error" class="text-red-500 text-sm"></span>
                     </div>
                     <div class="mb-4">
                         <label class="block text-left">Alamat</label>
-                        <textarea name="alamat" class="w-full px-3 py-2 border rounded"></textarea>
+                        <textarea name="alamat" id="alamat" class="w-full px-3 py-2 border rounded" required></textarea>
+                        <span id="alamat-error" class="text-red-500 text-sm"></span>
                     </div>
                 </form>
             `;
@@ -85,37 +88,40 @@
             openModal('createModal', 'Tambah Pelanggan', content, footer);
         }
 
-        function openViewModal(id, nama, email, telepon, alamat) {
+        function openViewModal(id, nama, email, noHp, alamat) {
             const content = `
                 <p><strong>ID:</strong> ${id}</p>
                 <p><strong>Nama:</strong> ${nama}</p>
                 <p><strong>Email:</strong> ${email}</p>
-                <p><strong>No HP:</strong> ${telepon}</p>
+                <p><strong>No HP:</strong> ${noHp}</p>
                 <p><strong>Alamat:</strong> ${alamat}</p>
             `;
             openModal('viewModal', 'Detail Pelanggan', content);
         }
 
-        function openEditModal(id, nama, email, telepon, alamat) {
+        function openEditModal(id, nama, email, noHp, alamat) {
             const content = `
-                <form id="editForm" method="POST" action="/pelanggan/${id}">
+                <form id="editForm" method="POST" action="/pelanggan/${id}" onsubmit="return validatePelangganForm()">
                     @csrf
                     @method('PUT')
                     <div class="mb-4">
                         <label class="block text-left">Nama Pelanggan</label>
-                        <input type="text" name="nama_pelanggan" value="${nama}" class="w-full px-3 py-2 border rounded" required>
+                        <input type="text" name="nama_pelanggan" id="nama_pelanggan" value="${nama}" class="w-full px-3 py-2 border rounded" required>
                     </div>
                     <div class="mb-4">
                         <label class="block text-left">Email</label>
-                        <input type="email" name="email" value="${email}" class="w-full px-3 py-2 border rounded" required>
+                        <input type="email" name="email" id="email" value="${email}" class="w-full px-3 py-2 border rounded" required>
+                        <span id="email-error" class="text-red-500 text-sm"></span>
                     </div>
                     <div class="mb-4">
                         <label class="block text-left">No HP</label>
-                        <input type="text" name="no_hp" value="${telepon}" class="w-full px-3 py-2 border rounded">
+                        <input type="text" name="no_hp" id="no_hp" value="${noHp}" class="w-full px-3 py-2 border rounded" required>
+                        <span id="no_hp-error" class="text-red-500 text-sm"></span>
                     </div>
                     <div class="mb-4">
                         <label class="block text-left">Alamat</label>
-                        <textarea name="alamat" class="w-full px-3 py-2 border rounded">${alamat}</textarea>
+                        <textarea name="alamat" id="alamat" class="w-full px-3 py-2 border rounded" required>${alamat}</textarea>
+                        <span id="alamat-error" class="text-red-500 text-sm"></span>
                     </div>
                 </form>
             `;
@@ -161,6 +167,43 @@
                     modal.classList.add('hidden');
                 }
             });
+        }
+
+        function validatePelangganForm() {
+            let isValid = true;
+
+            // Email validation
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('email-error');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.textContent = 'Email tidak valid.';
+                isValid = false;
+            } else {
+                emailError.textContent = '';
+            }
+
+            // No HP validation
+            const noHp = document.getElementById('no_hp').value;
+            const noHpError = document.getElementById('no_hp-error');
+            if (noHp.length < 11) {
+                noHpError.textContent = 'No HP minimal 11 digit.';
+                isValid = false;
+            } else {
+                noHpError.textContent = '';
+            }
+
+            // Alamat validation
+            const alamat = document.getElementById('alamat').value;
+            const alamatError = document.getElementById('alamat-error');
+            if (!alamat.trim()) {
+                alamatError.textContent = 'Alamat tidak boleh kosong.';
+                isValid = false;
+            } else {
+                alamatError.textContent = '';
+            }
+
+            return isValid;
         }
     </script>
 </body>

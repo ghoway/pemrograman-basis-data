@@ -25,8 +25,8 @@ class PelangganController extends Controller
         $request->validate([
             'nama_pelanggan' => 'required|string|max:255',
             'email' => 'required|email|unique:t_pelanggan,email',
-            'no_hp' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string',
+            'no_hp' => 'required|string|min:11|max:20',
+            'alamat' => 'required|string',
         ]);
 
         Pelanggan::create($request->all());
@@ -53,8 +53,8 @@ class PelangganController extends Controller
         $request->validate([
             'nama_pelanggan' => 'required|string|max:255',
             'email' => 'required|email|unique:t_pelanggan,email,' . $id . ',id_pelanggan',
-            'no_hp' => 'nullable|string|max:20',
-            'alamat' => 'nullable|string',
+            'no_hp' => 'required|string|min:11|max:20',
+            'alamat' => 'required|string',
         ]);
 
         $pelanggan->update($request->all());

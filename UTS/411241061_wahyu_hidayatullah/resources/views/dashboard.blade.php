@@ -24,10 +24,38 @@
             </div>
         </div>
 
-        <!-- Chart placeholder -->
+        <!-- Chart Transaksi -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
             <h2 class="text-xl font-semibold mb-4">Chart Transaksi</h2>
+            <div class="mb-4 flex gap-4 items-center">
+                <div>
+                    <label class="block text-sm font-medium">Tanggal Mulai</label>
+                    <input type="date" id="start-date-transaksi" class="px-3 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Tanggal Akhir</label>
+                    <input type="date" id="end-date-transaksi" class="px-3 py-2 border rounded">
+                </div>
+                <button onclick="filterTransaksiChart()" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
+            </div>
             <canvas id="transaksiChart"></canvas>
+        </div>
+
+        <!-- Chart Pelanggan -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold mb-4">Chart Pelanggan</h2>
+            <div class="mb-4 flex gap-4 items-center">
+                <div>
+                    <label class="block text-sm font-medium">Tanggal Mulai</label>
+                    <input type="date" id="start-date-pelanggan" class="px-3 py-2 border rounded">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">Tanggal Akhir</label>
+                    <input type="date" id="end-date-pelanggan" class="px-3 py-2 border rounded">
+                </div>
+                <button onclick="filterPelangganChart()" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
+            </div>
+            <canvas id="pelangganChart"></canvas>
         </div>
 
         <!-- Table for transactions -->
@@ -72,26 +100,27 @@
             <div class="relative p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
                     <h3 class="text-lg font-medium text-gray-900" id="modal-title">Tambah Transaksi</h3>
-                    <form id="transaksi-form" method="POST" class="mt-4">
-                        @csrf
-                        <input type="hidden" name="_method" id="method" value="POST">
-                        <input type="hidden" name="id" id="transaksi-id">
-                        <div class="mb-4">
-                            <label class="block text-left">Pelanggan</label>
-                            <select name="id_pelanggan" id="id_pelanggan" class="w-full px-3 py-2 border rounded">
-                                @foreach($pelanggans as $pelanggan)
-                                <option value="{{ $pelanggan->id_pelanggan }}">{{ $pelanggan->nama_pelanggan }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-left">Tanggal Transaksi</label>
-                            <input type="date" name="tanggal_transaksi" id="tanggal_transaksi" class="w-full px-3 py-2 border rounded" required>
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-left">Total Transaksi</label>
-                            <input type="number" step="0.01" name="total_transaksi" id="total_transaksi" class="w-full px-3 py-2 border rounded" required>
-                        </div>
+                     <form id="transaksi-form" method="POST" class="mt-4" onsubmit="return validateTransaksiForm()">
+                         @csrf
+                         <input type="hidden" name="_method" id="method" value="POST">
+                         <input type="hidden" name="id" id="transaksi-id">
+                         <div class="mb-4">
+                             <label class="block text-left">Pelanggan</label>
+                             <select name="id_pelanggan" id="id_pelanggan" class="w-full px-3 py-2 border rounded" required>
+                                 @foreach($pelanggans as $pelanggan)
+                                 <option value="{{ $pelanggan->id_pelanggan }}">{{ $pelanggan->nama_pelanggan }}</option>
+                                 @endforeach
+                             </select>
+                         </div>
+                         <div class="mb-4">
+                             <label class="block text-left">Tanggal Transaksi</label>
+                             <input type="date" name="tanggal_transaksi" id="tanggal_transaksi" class="w-full px-3 py-2 border rounded" required>
+                         </div>
+                         <div class="mb-4">
+                             <label class="block text-left">Total Transaksi</label>
+                             <input type="number" step="0.01" name="total_transaksi" id="total_transaksi" class="w-full px-3 py-2 border rounded" required>
+                             <span id="total_transaksi-error" class="text-red-500 text-sm"></span>
+                         </div>
                         <div class="flex justify-end">
                             <button type="button" onclick="closeModal('modal')" class="mr-2 px-4 py-2 bg-gray-300 rounded">Tutup</button>
                             <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Simpan</button>
@@ -134,17 +163,40 @@
     </div>
 
     <script>
-        // Chart example with real data
-        const ctx = document.getElementById('transaksiChart').getContext('2d');
-        const transaksiChart = new Chart(ctx, {
+        // Chart Transaksi
+        const ctxTransaksi = document.getElementById('transaksiChart').getContext('2d');
+        const transaksiChart = new Chart(ctxTransaksi, {
             type: 'bar',
             data: {
                 labels: @json($chartLabels),
                 datasets: [{
-                    label: 'Transaksi',
+                    label: 'Jumlah Transaksi',
                     data: @json($chartValues),
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Chart Pelanggan
+        const ctxPelanggan = document.getElementById('pelangganChart').getContext('2d');
+        const pelangganChart = new Chart(ctxPelanggan, {
+            type: 'bar',
+            data: {
+                labels: @json($pelangganChartLabels),
+                datasets: [{
+                    label: 'Jumlah Transaksi',
+                    data: @json($pelangganChartValues),
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
                 }]
             },
@@ -233,6 +285,46 @@
                     modal.classList.add('hidden');
                 }
             });
+        }
+
+        // Filter functions
+        function filterTransaksiChart() {
+            const startDate = document.getElementById('start-date-transaksi').value;
+            const endDate = document.getElementById('end-date-transaksi').value;
+
+            fetch(`/chart-data?type=transaksi&start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    transaksiChart.data.labels = data.labels;
+                    transaksiChart.data.datasets[0].data = data.values;
+                    transaksiChart.update();
+                });
+        }
+
+        function filterPelangganChart() {
+            const startDate = document.getElementById('start-date-pelanggan').value;
+            const endDate = document.getElementById('end-date-pelanggan').value;
+
+            fetch(`/chart-data?type=pelanggan&start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    pelangganChart.data.labels = data.labels;
+                    pelangganChart.data.datasets[0].data = data.values;
+                    pelangganChart.update();
+                });
+        }
+
+        function validateTransaksiForm() {
+            const totalTransaksi = document.getElementById('total_transaksi').value;
+            const errorSpan = document.getElementById('total_transaksi-error');
+
+            if (isNaN(totalTransaksi) || parseFloat(totalTransaksi) < 1) {
+                errorSpan.textContent = 'Total transaksi harus berupa angka dan minimal 1.';
+                return false;
+            } else {
+                errorSpan.textContent = '';
+                return true;
+            }
         }
 
         // Show success message if any

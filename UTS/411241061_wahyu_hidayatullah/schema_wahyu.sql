@@ -22,20 +22,20 @@ CREATE TABLE t_transaksi (
 
 -- Insert data pelanggan (6 pelanggan, salah satu tanpa transaksi)
 INSERT INTO t_pelanggan (nama_pelanggan, email, no_hp, alamat) VALUES
-('Ahmad Rahman', 'ahmad@example.com', '081234567890', 'Jl. Sudirman No. 1, Jakarta'),
-('Siti Nurhaliza', 'siti@example.com', '081234567891', 'Jl. Thamrin No. 2, Jakarta'),
-('Budi Santoso', 'budi@example.com', '081234567892', 'Jl. Gatot Subroto No. 3, Jakarta'),
-('Dewi Lestari', 'dewi@example.com', '081234567893', 'Jl. Malioboro No. 4, Yogyakarta'),
-('Eko Prasetyo', 'eko@example.com', '081234567894', 'Jl. Malioboro No. 5, Yogyakarta'),
-('Fajar Setiawan', 'fajar@example.com', '081234567895', 'Jl. Malioboro No. 6, Yogyakarta');
+('Kamaria Utami', 'kamaria.utami1991@mail.com', '089641055828', 'Jl. Moch. Yamin No. 789, Metro Lampung'),
+('Gawati Hastuti', 'gawati.hastuti1986@mail.com', '085895321686', 'Jl. Jend. A. Yani No. 787, Bekasi'),
+('Lasmono Samosir', 'lasmono.samosir1994@mail.com', '085939322139', 'Jl. Ki. Sutarto No. 128, Yogyakarta'),
+('Dedi Setiawan', 'dedi.setiawan1982@mail.com', '087860062457', 'Gg. Pelajar Pejuang 45, Probolinggo'),
+('Zulaikha Riyanti', 'zulaikha.riyanti2000@mail.com', '081252522404', 'Jl. Tubagus Ismail No. 89, Surakarta'),
+('Ella Fujiati', 'fajella.fujiati2001@mail.com', '081237235964', 'Jl. Transad No. 61, Surabaya');
 
 -- Insert data transaksi (5 transaksi, masing-masing ke pelanggan berbeda)
 INSERT INTO t_transaksi (id_pelanggan, tanggal_transaksi, total_transaksi) VALUES
-(1, '2023-10-01', 150000.00),
-(2, '2023-10-02', 200000.00),
-(3, '2023-10-03', 250000.00),
-(4, '2023-10-04', 300000.00),
-(5, '2023-10-05', 350000.00);
+(1, '2025-05-04', 1200000.00),
+(2, '2025-05-10', 2000000.00),
+(3, '2025-06-15', 1750000.00),
+(4, '2025-06-22', 3000000.00),
+(5, '2025-06-24', 2250000.00);
 
 -- Tampilkan seluruh transaksi beserta nama pelanggan dan email menggunakan JOIN
 SELECT t.id_transaksi, p.nama_pelanggan, p.email, t.tanggal_transaksi, t.total_transaksi

@@ -17,8 +17,9 @@ return new class extends Migration
             $table->date('tanggal_transaksi');
             $table->decimal('total_transaksi', 10, 2);
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('id_pelanggan')->references('id_pelanggan')->on('t_pelanggan');
+            $table->foreign('id_pelanggan')->references('id_pelanggan')->on('t_pelanggan')->onDelete('cascade');
         });
     }
 

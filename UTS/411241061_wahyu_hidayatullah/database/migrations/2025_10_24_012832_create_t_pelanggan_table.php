@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('t_pelanggan', function (Blueprint $table) {
             $table->id('id_pelanggan');
             $table->string('nama_pelanggan', 100);
-            $table->string('email', 100);
+            $table->string('email', 100)->unique();
             $table->string('no_hp', 15);
             $table->string('alamat', 200);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -13,39 +13,43 @@ class PelangganSeeder extends Seeder
      */
     public function run(): void
     {
-        Pelanggan::create([
-            'nama_pelanggan' => 'Ahmad Rahman',
-            'email' => 'ahmad@example.com',
-            'no_hp' => '081234567890',
-            'alamat' => 'Jl. Sudirman No. 1, Jakarta',
-        ]);
-
-        Pelanggan::create([
-            'nama_pelanggan' => 'Siti Nurhaliza',
-            'email' => 'siti@example.com',
-            'no_hp' => '081234567891',
-            'alamat' => 'Jl. Thamrin No. 2, Jakarta',
-        ]);
-
-        Pelanggan::create([
-            'nama_pelanggan' => 'Budi Santoso',
-            'email' => 'budi@example.com',
-            'no_hp' => '081234567892',
-            'alamat' => 'Jl. Gatot Subroto No. 3, Jakarta',
-        ]);
-
-        Pelanggan::create([
-            'nama_pelanggan' => 'Dewi Lestari',
-            'email' => 'dewi@example.com',
-            'no_hp' => '081234567893',
-            'alamat' => 'Jl. Malioboro No. 4, Yogyakarta',
-        ]);
-
-        Pelanggan::create([
-            'nama_pelanggan' => 'Eko Prasetyo',
-            'email' => 'eko@example.com',
-            'no_hp' => '081234567894',
-            'alamat' => 'Jl. Malioboro No. 5, Yogyakarta',
+        Pelanggan::insert([
+            [
+                'nama_pelanggan' => 'Kamaria Utami',
+                'email' => 'kamaria.utami1991@mail.com',
+                'no_hp' => '089641055828',
+                'alamat' => 'Jl. Moch. Yamin No. 789, Metro Lampung',
+            ],
+            [
+                'nama_pelanggan' => 'Gawati Hastuti',
+                'email' => 'gawati.hastuti1986@mail.com',
+                'no_hp' => '085895321686',
+                'alamat' => 'Jl. Jend. A. Yani No. 787, Bekasi',
+            ],
+            [
+                'nama_pelanggan' => 'Lasmono Samosir',
+                'email' => 'lasmono.samosir1994@mail.com',
+                'no_hp' => '085939322139',
+                'alamat' => 'Jl. Ki. Sutarto No. 128, Yogyakarta',
+            ],
+            [
+                'nama_pelanggan' => 'Dedi Setiawan',
+                'email' => 'dedi.setiawan1982@mail.com',
+                'no_hp' => '087860062457',
+                'alamat' => 'Gg. Pelajar Pejuang 45, Probolinggo',
+            ],
+            [
+                'nama_pelanggan' => 'Zulaikha Riyanti',
+                'email' => 'zulaikha.riyanti2000@mail.com',
+                'no_hp' => '081252522404',
+                'alamat' => 'Jl. Tubagus Ismail No. 89, Surakarta',
+            ],
+            [
+                'nama_pelanggan' => 'Ella Fujiati',
+                'email' => 'fajella.fujiati2001@mail.com',
+                'no_hp' => '081237235964',
+                'alamat' => 'Jl. Transad No. 61, Surabaya',
+            ],
         ]);
     }
 }

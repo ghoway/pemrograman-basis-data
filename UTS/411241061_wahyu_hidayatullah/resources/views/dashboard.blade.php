@@ -24,38 +24,45 @@
             </div>
         </div>
 
-        <!-- Chart Transaksi -->
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-xl font-semibold mb-4">Chart Transaksi</h2>
-            <div class="mb-4 flex gap-4 items-center">
-                <div>
-                    <label class="block text-sm font-medium">Tanggal Mulai</label>
-                    <input type="date" id="start-date-transaksi" class="px-3 py-2 border rounded">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <!-- Chart Transaksi -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Chart Transaksi</h2>
+                <div class="mb-4 flex flex-col md:flex-row gap-2 md:gap-4 items-stretch md:items-center">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium">Tanggal Mulai</label>
+                        <input type="date" id="start-date-transaksi" class="px-3 py-2 border rounded w-full">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium">Tanggal Akhir</label>
+                        <input type="date" id="end-date-transaksi" class="px-3 py-2 border rounded w-full">
+                    </div>
+                    <button onclick="filterTransaksiChart()" class="bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto mt-2 md:mt-6">Filter</button>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium">Tanggal Akhir</label>
-                    <input type="date" id="end-date-transaksi" class="px-3 py-2 border rounded">
-                </div>
-                <button onclick="filterTransaksiChart()" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
-            </div>
-            <canvas id="transaksiChart"></canvas>
-        </div>
 
-        <!-- Chart Pelanggan -->
-        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <h2 class="text-xl font-semibold mb-4">Chart Pelanggan</h2>
-            <div class="mb-4 flex gap-4 items-center">
-                <div>
-                    <label class="block text-sm font-medium">Tanggal Mulai</label>
-                    <input type="date" id="start-date-pelanggan" class="px-3 py-2 border rounded">
+                <div class="w-full h-80">
+                    <canvas id="transaksiChart" class="w-full h-full"></canvas>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium">Tanggal Akhir</label>
-                    <input type="date" id="end-date-pelanggan" class="px-3 py-2 border rounded">
-                </div>
-                <button onclick="filterPelangganChart()" class="bg-blue-500 text-white px-4 py-2 rounded">Filter</button>
             </div>
-            <canvas id="pelangganChart"></canvas>
+
+            <!-- Chart Pelanggan -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Chart Pelanggan</h2>
+                <div class="mb-4 flex flex-col md:flex-row gap-2 md:gap-4 items-stretch md:items-center">
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium">Tanggal Mulai</label>
+                        <input type="date" id="start-date-transaksi" class="px-3 py-2 border rounded w-full">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium">Tanggal Akhir</label>
+                        <input type="date" id="end-date-transaksi" class="px-3 py-2 border rounded w-full">
+                    </div>
+                    <button onclick="filterTransaksiChart()" class="bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto mt-2 md:mt-6">Filter</button>
+                </div>
+                <div class="w-full h-80">
+                    <canvas id="pelangganChart" class="w-full h-full"></canvas>
+                </div>
+            </div>
         </div>
 
         <!-- Table for transactions -->
@@ -165,49 +172,81 @@
     <script>
         // Chart Transaksi
         const ctxTransaksi = document.getElementById('transaksiChart').getContext('2d');
-        const transaksiChart = new Chart(ctxTransaksi, {
-            type: 'bar',
-            data: {
-                labels: @json($chartLabels),
-                datasets: [{
-                    label: 'Jumlah Transaksi',
-                    data: @json($chartValues),
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+            const transaksiChart = new Chart(ctxTransaksi, {
+                type: 'pie',
+                data: {
+                    labels: @json($chartLabels),
+                    datasets: [{
+                        label: 'Jumlah Transaksi',
+                        data: @json($chartValues),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Chart Pelanggan
-        const ctxPelanggan = document.getElementById('pelangganChart').getContext('2d');
-        const pelangganChart = new Chart(ctxPelanggan, {
-            type: 'bar',
-            data: {
-                labels: @json($pelangganChartLabels),
-                datasets: [{
-                    label: 'Jumlah Transaksi',
-                    data: @json($pelangganChartValues),
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
+            // Chart Pelanggan
+            const ctxPelanggan = document.getElementById('pelangganChart').getContext('2d');
+            const pelangganChart = new Chart(ctxPelanggan, {
+                type: 'bar',
+                data: {
+                    labels: @json($pelangganChartLabels),
+                    datasets: [{
+                        label: 'Jumlah Transaksi',
+                        data: @json($pelangganChartValues),
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
+            });
 
         // Modal functions
         function openModal(type, id = null, nama = '', email = '', tanggal = '', total = '') {

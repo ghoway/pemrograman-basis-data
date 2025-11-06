@@ -7,12 +7,12 @@ const NavBar = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/', label: 'Dasbor' },
+    { href: '/', label: 'Dashboard' },
+    { href: '/vendors', label: 'Vendor' },
     { href: '/departments', label: 'Departemen' },
     { href: '/employees', label: 'Karyawan' },
-    { href: '/assets', label: 'Aset' },
     { href: '/categories', label: 'Kategori' },
-    { href: '/vendors', label: 'Vendor' },
+    { href: '/assets', label: 'Aset' },
     { href: '/loans', label: 'Peminjaman' },
   ];
 

@@ -20,7 +20,6 @@ CREATE TABLE t_transaksi (
     FOREIGN KEY (id_pelanggan) REFERENCES t_pelanggan(id_pelanggan)
 );
 
--- Insert data pelanggan (6 pelanggan, salah satu tanpa transaksi)
 INSERT INTO t_pelanggan (nama_pelanggan, email, no_hp, alamat) VALUES
 ('Kamaria Utami', 'kamaria.utami1991@mail.com', '089641055828', 'Jl. Moch. Yamin No. 789, Metro Lampung'),
 ('Gawati Hastuti', 'gawati.hastuti1986@mail.com', '085895321686', 'Jl. Jend. A. Yani No. 787, Bekasi'),
@@ -29,7 +28,6 @@ INSERT INTO t_pelanggan (nama_pelanggan, email, no_hp, alamat) VALUES
 ('Zulaikha Riyanti', 'zulaikha.riyanti2000@mail.com', '081252522404', 'Jl. Tubagus Ismail No. 89, Surakarta'),
 ('Ella Fujiati', 'fajella.fujiati2001@mail.com', '081237235964', 'Jl. Transad No. 61, Surabaya');
 
--- Insert data transaksi (5 transaksi, masing-masing ke pelanggan berbeda)
 INSERT INTO t_transaksi (id_pelanggan, tanggal_transaksi, total_transaksi) VALUES
 (1, '2025-05-04', 1200000.00),
 (2, '2025-05-10', 2000000.00),
@@ -37,13 +35,10 @@ INSERT INTO t_transaksi (id_pelanggan, tanggal_transaksi, total_transaksi) VALUE
 (4, '2025-06-22', 3000000.00),
 (5, '2025-06-24', 2250000.00);
 
--- Tampilkan seluruh transaksi beserta nama pelanggan dan email menggunakan JOIN
 SELECT t.id_transaksi, p.nama_pelanggan, p.email, t.tanggal_transaksi, t.total_transaksi
 FROM t_transaksi t
 JOIN t_pelanggan p ON t.id_pelanggan = p.id_pelanggan;
 
--- Ubah total_transaksi dari transaksi dengan id_transaksi = 2 menjadi 1.500.000
 UPDATE t_transaksi SET total_transaksi = 1500000.00 WHERE id_transaksi = 2;
 
--- Hapus pelanggan yang belum pernah melakukan transaksi
 DELETE FROM t_pelanggan WHERE id_pelanggan NOT IN (SELECT DISTINCT id_pelanggan FROM t_transaksi);

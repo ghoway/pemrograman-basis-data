@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-br from-orange-100 via-red-50 to-blue-100 text-gray-800 relative overflow-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-br from-orange-100 via-red-50 to-blue-100 text-gray-800 relative`}
       >
         {/* Background decorative elements */}
         <div className="absolute inset-0 overflow-hidden">

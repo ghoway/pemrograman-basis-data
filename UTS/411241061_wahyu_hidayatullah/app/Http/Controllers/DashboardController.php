@@ -13,6 +13,7 @@ class DashboardController extends Controller
     {
         $totalPelanggan = Pelanggan::count();
         $totalTransaksi = Transaksi::count();
+        $totalTransaksiRp = Transaksi::sum('total_transaksi');
 
         $transaksis = DB::table('t_transaksi')
             ->join('t_pelanggan', 't_transaksi.id_pelanggan', '=', 't_pelanggan.id_pelanggan')
@@ -54,7 +55,23 @@ class DashboardController extends Controller
         $pelangganChartLabels = array_keys($pelangganChartData);
         $pelangganChartValues = array_values($pelangganChartData);
 
-        return view('dashboard', compact('totalPelanggan', 'totalTransaksi', 'transaksis', 'pelanggans', 'chartLabels', 'chartValues', 'pelangganChartLabels', 'pelangganChartValues'));
+        // Data for total transaksi chart: sum per month
+        $totalTransaksiChartData = DB::table('t_transaksi')
+            ->whereNull('deleted_at')
+            ->selectRaw('MONTH(tanggal_transaksi) as month, SUM(total_transaksi) as total')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month')
+            ->toArray();
+
+        $totalTransaksiChartLabels = [];
+        $totalTransaksiChartValues = [];
+        foreach ($totalTransaksiChartData as $month => $total) {
+            $totalTransaksiChartLabels[] = $months[$month - 1];
+            $totalTransaksiChartValues[] = $total;
+        }
+
+        return view('dashboard', compact('totalPelanggan', 'totalTransaksi', 'transaksis', 'pelanggans', 'chartLabels', 'chartValues', 'pelangganChartLabels', 'pelangganChartValues', 'totalTransaksiChartLabels', 'totalTransaksiChartValues'));
     }
 
     public function store(Request $request)
@@ -119,7 +136,7 @@ class DashboardController extends Controller
                 $labels[] = $months[$month - 1];
                 $values[] = $count;
             }
-        } else        if ($type === 'pelanggan') {
+        } else if ($type === 'pelanggan') {
             $chartData = $query->join('t_pelanggan', 't_transaksi.id_pelanggan', '=', 't_pelanggan.id_pelanggan')
                 ->whereNull('t_pelanggan.deleted_at')
                 ->selectRaw('t_pelanggan.nama_pelanggan, COUNT(t_transaksi.id_transaksi) as count')

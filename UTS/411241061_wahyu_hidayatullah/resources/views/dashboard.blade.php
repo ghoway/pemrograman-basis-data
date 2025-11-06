@@ -51,19 +51,27 @@
                 <div class="mb-4 flex flex-col md:flex-row gap-2 md:gap-4 items-stretch md:items-center">
                     <div class="flex-1">
                         <label class="block text-sm font-medium">Tanggal Mulai</label>
-                        <input type="date" id="start-date-transaksi" class="px-3 py-2 border rounded w-full">
+                        <input type="date" id="start-date-pelanggan" class="px-3 py-2 border rounded w-full">
                     </div>
                     <div class="flex-1">
                         <label class="block text-sm font-medium">Tanggal Akhir</label>
-                        <input type="date" id="end-date-transaksi" class="px-3 py-2 border rounded w-full">
+                        <input type="date" id="end-date-pelanggan" class="px-3 py-2 border rounded w-full">
                     </div>
-                    <button onclick="filterTransaksiChart()" class="bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto mt-2 md:mt-6">Filter</button>
+                    <button onclick="filterPelangganChart()" class="bg-blue-500 text-white px-4 py-2 rounded w-full md:w-auto mt-2 md:mt-6">Filter</button>
                 </div>
                 <div class="w-full h-80">
                     <canvas id="pelangganChart" class="w-full h-full"></canvas>
                 </div>
             </div>
         </div>
+
+        <!-- Chart Total Transaksi Rp -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold mb-4">Chart Total Transaksi (Rp)</h2>
+            <div class="w-full h-96">
+                <canvas id="totalTransaksiChart" class="w-full h-full"></canvas>
+            </div>
+        </div>  
 
         <!-- Table for transactions -->
         <div class="bg-white p-6 rounded-lg shadow-md">
@@ -247,6 +255,33 @@
                     }
                 }
             });
+
+        // Chart Total Transaksi Rp
+        const ctxTotalTransaksi = document.getElementById('totalTransaksiChart').getContext('2d');
+        const totalTransaksiChart = new Chart(ctxTotalTransaksi, {
+            type: 'bar',
+            data: {
+                labels: @json($totalTransaksiChartLabels),
+                datasets: [{
+                    label: 'Total Transaksi (Rp)',
+                    data: @json($totalTransaksiChartValues),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
 
         // Modal functions
         function openModal(type, id = null, nama = '', email = '', tanggal = '', total = '') {
